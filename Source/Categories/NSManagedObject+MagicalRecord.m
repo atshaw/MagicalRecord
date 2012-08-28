@@ -291,49 +291,34 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
     return request;
 }
 
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context
 {
 	NSFetchRequest *request = [self MR_requestAllInContext:context];
 	
-	NSSortDescriptor *sortBy = [[NSSortDescriptor alloc] initWithKey:sortTerm ascending:ascending];
-	[request setSortDescriptors:[NSArray arrayWithObject:sortBy]];
-    MR_AUTORELEASE(sortBy);
-	
+	[request setSortDescriptors:sortTerm];
 	return request;
 }
 
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm
 {
 	return [self MR_requestAllSortedBy:sortTerm
-						  ascending:ascending
 						  inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context
 {
 	NSFetchRequest *request = [self MR_requestAllInContext:context];
 	[request setPredicate:searchTerm];
 	[request setFetchBatchSize:[self MR_defaultBatchSize]];
 	
-    NSMutableArray* sortDescriptors = [[NSMutableArray alloc] init];
-    NSArray* sortKeys = [sortTerm componentsSeparatedByString:@","];
-    for (NSString* sortKey in sortKeys) 
-    {
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:sortKey ascending:ascending];
-        [sortDescriptors addObject:sortDescriptor];
-        MR_AUTORELEASE(sortDescriptor);
-    }
-    
-	[request setSortDescriptors:sortDescriptors];
-    MR_AUTORELEASE(sortDescriptors);
+	[request setSortDescriptors:sortTerm];
     
 	return request;
 }
 
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm;
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm;
 {
 	NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm
-											 ascending:ascending
 										 withPredicate:searchTerm 
 											 inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 	return request;
@@ -353,34 +338,31 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 	return [self MR_findAllInContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context
 {
-	NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm ascending:ascending inContext:context];
+	NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm inContext:context];
 	
 	return [self MR_executeFetchRequest:request inContext:context];
 }
 
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm
 {
 	return [self MR_findAllSortedBy:sortTerm
-					   ascending:ascending 
 					   inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context
 {
 	NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm
-											 ascending:ascending
 										 withPredicate:searchTerm
 											 inContext:context];
 	
 	return [self MR_executeFetchRequest:request inContext:context];
 }
 
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm
 {
 	return [self MR_findAllSortedBy:sortTerm
-					   ascending:ascending
 				   withPredicate:searchTerm 
 					   inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
@@ -405,10 +387,9 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
     return controller;
 }
 
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context
 {
 	NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm 
-                                                ascending:ascending 
                                             withPredicate:searchTerm
                                                 inContext:context];
 
@@ -422,40 +403,36 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
     return controller;
 }
 
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending delegate:(id)delegate
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm delegate:(id)delegate
 {
 	return [self MR_fetchAllGroupedBy:group
                         withPredicate:searchTerm
                              sortedBy:sortTerm
-                            ascending:ascending
                                  delegate:delegate
                             inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context;
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context;
 {
     return [self MR_fetchAllGroupedBy:group 
                         withPredicate:searchTerm
                              sortedBy:sortTerm
-                            ascending:ascending
                              delegate:nil
                             inContext:context];
 }
 
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending 
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm 
 {
     return [self MR_fetchAllGroupedBy:group 
                         withPredicate:searchTerm
                              sortedBy:sortTerm
-                            ascending:ascending
                             inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
 
-+ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath inContext:(NSManagedObjectContext *)context
++ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath inContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm
-                                                ascending:ascending
                                             withPredicate:searchTerm
                                                 inContext:context];
 
@@ -469,21 +446,19 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
     return controller;
 }
 
-+ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath;
++ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath;
 {
     return [self MR_fetchAllSortedBy:sortTerm
-                        ascending:ascending
                     withPredicate:searchTerm
                           groupBy:groupingKeyPath
                         inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
-+ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context
++ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context
 {
 	NSFetchedResultsController *controller = [self MR_fetchAllGroupedBy:groupingKeyPath 
 															  withPredicate:searchTerm
 																   sortedBy:sortTerm 
-																  ascending:ascending
                                                                    delegate:delegate
 																  inContext:context];
 	
@@ -491,10 +466,9 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 	return controller;
 }
 
-+ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate
++ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate
 {
 	return [self MR_fetchAllSortedBy:sortTerm 
-						ascending:ascending
 					withPredicate:searchTerm 
 						  groupBy:groupingKeyPath 
                          delegate:delegate
@@ -559,18 +533,17 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
     return [self MR_executeFetchRequestAndReturnFirstObject:request inContext:context];
 }
 
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSString *)property ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSArray *)property inContext:(NSManagedObjectContext *)context
 {
-	NSFetchRequest *request = [self MR_requestAllSortedBy:property ascending:ascending withPredicate:searchterm inContext:context];
+	NSFetchRequest *request = [self MR_requestAllSortedBy:property withPredicate:searchterm inContext:context];
 
 	return [self MR_executeFetchRequestAndReturnFirstObject:request inContext:context];
 }
 
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSString *)property ascending:(BOOL)ascending
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSArray *)property
 {
 	return [self MR_findFirstWithPredicate:searchterm
-							   sortedBy:property 
-							  ascending:ascending 
+							   sortedBy:property
 							  inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
@@ -591,10 +564,9 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 }
 
 
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortBy ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context andRetrieveAttributes:(id)attributes, ...
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortBy inContext:(NSManagedObjectContext *)context andRetrieveAttributes:(id)attributes, ...
 {
 	NSFetchRequest *request = [self MR_requestAllSortedBy:sortBy
-											 ascending:ascending
 										 withPredicate:searchTerm
 											 inContext:context];
 	[request setPropertiesToFetch:[self MR_propertiesNamed:attributes]];
@@ -602,11 +574,10 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 	return [self MR_executeFetchRequestAndReturnFirstObject:request inContext:context];
 }
 
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortBy ascending:(BOOL)ascending andRetrieveAttributes:(id)attributes, ...
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortBy andRetrieveAttributes:(id)attributes, ...
 {
 	return [self MR_findFirstWithPredicate:searchTerm
-							   sortedBy:sortBy 
-							  ascending:ascending 
+							   sortedBy:sortBy
 								inContext:[NSManagedObjectContext MR_contextForCurrentThread]
 				  andRetrieveAttributes:attributes];
 }
@@ -627,20 +598,19 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 					   inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 
-+ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context
++ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context
 {
 	NSPredicate *searchTerm = [NSPredicate predicateWithFormat:@"%K = %@", attribute, searchValue];
-	NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm ascending:ascending withPredicate:searchTerm inContext:context];
+	NSFetchRequest *request = [self MR_requestAllSortedBy:sortTerm withPredicate:searchTerm inContext:context];
 	
 	return [self MR_executeFetchRequest:request];
 }
 
-+ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSString *)sortTerm ascending:(BOOL)ascending
++ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSArray *)sortTerm
 {
 	return [self MR_findByAttribute:attribute
 					   withValue:searchValue
-					  andOrderBy:sortTerm 
-					   ascending:ascending 
+					  andOrderBy:sortTerm
 					   inContext:[NSManagedObjectContext MR_contextForCurrentThread]];
 }
 

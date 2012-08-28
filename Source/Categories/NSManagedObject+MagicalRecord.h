@@ -63,17 +63,17 @@
 + (NSFetchRequest *) MR_requestFirstWithPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context;
 + (NSFetchRequest *) MR_requestFirstByAttribute:(NSString *)attribute withValue:(id)searchValue;
 + (NSFetchRequest *) MR_requestFirstByAttribute:(NSString *)attribute withValue:(id)searchValue inContext:(NSManagedObjectContext *)context;
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending;
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context;
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm;
-+ (NSFetchRequest *) MR_requestAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context;
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm;
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context;
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm;
++ (NSFetchRequest *) MR_requestAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context;
 
 + (NSArray *) MR_findAll;
 + (NSArray *) MR_findAllInContext:(NSManagedObjectContext *)context;
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending;
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context;
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm;
-+ (NSArray *) MR_findAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context;
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm;
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context;
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm;
++ (NSArray *) MR_findAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context;
 
 + (NSArray *) MR_findAllWithPredicate:(NSPredicate *)searchTerm;
 + (NSArray *) MR_findAllWithPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context;
@@ -85,19 +85,19 @@
 + (id) MR_findFirstInContext:(NSManagedObjectContext *)context;
 + (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm;
 + (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context;
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSString *)property ascending:(BOOL)ascending;
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSString *)property ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context;
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSArray *)property;
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchterm sortedBy:(NSArray *)property inContext:(NSManagedObjectContext *)context;
 + (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm andRetrieveAttributes:(NSArray *)attributes;
 + (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm andRetrieveAttributes:(NSArray *)attributes inContext:(NSManagedObjectContext *)context;
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortBy ascending:(BOOL)ascending andRetrieveAttributes:(id)attributes, ...;
-+ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortBy ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context andRetrieveAttributes:(id)attributes, ...;
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortBy andRetrieveAttributes:(id)attributes, ...;
++ (id) MR_findFirstWithPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortBy inContext:(NSManagedObjectContext *)context andRetrieveAttributes:(id)attributes, ...;
 
 + (id) MR_findFirstByAttribute:(NSString *)attribute withValue:(id)searchValue;
 + (id) MR_findFirstByAttribute:(NSString *)attribute withValue:(id)searchValue inContext:(NSManagedObjectContext *)context;
 + (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue;
 + (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue inContext:(NSManagedObjectContext *)context;
-+ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSString *)sortTerm ascending:(BOOL)ascending;
-+ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context;
++ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSArray *)sortTerm;
++ (NSArray *) MR_findByAttribute:(NSString *)attribute withValue:(id)searchValue andOrderBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context;
 
 + (NSNumber *)MR_aggregateOperation:(NSString *)function onAttribute:(NSString *)attributeName withPredicate:(NSPredicate *)predicate inContext:(NSManagedObjectContext *)context;
 + (NSNumber *)MR_aggregateOperation:(NSString *)function onAttribute:(NSString *)attributeName withPredicate:(NSPredicate *)predicate;
@@ -110,14 +110,14 @@
 
 + (void) MR_performFetch:(NSFetchedResultsController *)controller;
 
-+ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate;
-+ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSString *)sortTerm ascending:(BOOL)ascending withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context;
++ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate;
++ (NSFetchedResultsController *) MR_fetchAllSortedBy:(NSArray *)sortTerm withPredicate:(NSPredicate *)searchTerm groupBy:(NSString *)groupingKeyPath delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context;
 
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending;
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending inContext:(NSManagedObjectContext *)context;
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm;
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm inContext:(NSManagedObjectContext *)context;
 
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending delegate:(id<NSFetchedResultsControllerDelegate>)delegate;
-+ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSString *)sortTerm ascending:(BOOL)ascending delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context;
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm delegate:(id<NSFetchedResultsControllerDelegate>)delegate;
++ (NSFetchedResultsController *) MR_fetchAllGroupedBy:(NSString *)group withPredicate:(NSPredicate *)searchTerm sortedBy:(NSArray *)sortTerm delegate:(id<NSFetchedResultsControllerDelegate>)delegate inContext:(NSManagedObjectContext *)context;
 
 #endif
 
