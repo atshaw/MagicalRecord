@@ -56,7 +56,9 @@ void cleanup_save_queue()
         localContext = [NSManagedObjectContext contextThatNotifiesDefaultContextOnMainThreadWithCoordinator:localCoordinator];
 #else
         localContext = [NSManagedObjectContext MR_contextThatNotifiesDefaultContextOnMainThread];
-        [localContext MR_observeiCloudChangesInCoordinator:defaultCoordinator];
+        
+        // (AS) 9/5/2012 disabling this because it crashed once (upgrading from older build) and we don't need icloud anyways
+//        [localContext MR_observeiCloudChangesInCoordinator:defaultCoordinator];
 #endif
         
         [mainContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
@@ -71,7 +73,8 @@ void cleanup_save_queue()
     }
     
     localContext.MR_notifiesMainContextOnSave = NO;
-    [localContext MR_stopObservingiCloudChangesInCoordinator:defaultCoordinator];
+    // (AS) 9/5/2012 disabling this because it crashed once (upgrading from older build) and we don't need icloud anyways
+//    [localContext MR_stopObservingiCloudChangesInCoordinator:defaultCoordinator];
     [mainContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
 }
 
