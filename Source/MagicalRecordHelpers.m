@@ -183,6 +183,8 @@ void replaceSelectorForTargetWithSourceImpAndSwizzle(Class originalClass, SEL or
 
 + (BOOL) isICloudEnabled;
 {
+    // (AS) 9/5/2012 disabling this because it crashed once (upgrading from older build) and we don't need icloud anyways
+    return NO;
     NSURL *cloudURL = [NSPersistentStore MR_cloudURLForUbiqutiousContainer:nil];
     return cloudURL != nil;
 }
@@ -292,12 +294,11 @@ void replaceSelectorForTargetWithSourceImpAndSwizzle(Class originalClass, SEL or
 {
     if (methodsHaveBeenSwizzled) return;
     
-    NSArray *classes = [NSArray arrayWithObjects:
-                        [NSManagedObject class],
+    NSArray *classes = @[[NSManagedObject class],
                         [NSManagedObjectContext class], 
                         [NSManagedObjectModel class], 
                         [NSPersistentStore class], 
-                        [NSPersistentStoreCoordinator class], nil];
+                        [NSPersistentStoreCoordinator class]];
     
     [classes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         Class klass = (Class)obj;

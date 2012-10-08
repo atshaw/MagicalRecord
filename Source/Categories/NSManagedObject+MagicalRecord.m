@@ -50,7 +50,7 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 	{
 		return nil;
 	}
-	return [results objectAtIndex:0];
+	return results[0];
 }
 
 + (id) MR_executeFetchRequestAndReturnFirstObject:(NSFetchRequest *)request
@@ -106,7 +106,7 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 		
 		for (NSString *propertyName in properties)
 		{
-			NSPropertyDescription *property = [propDict objectForKey:propertyName];
+			NSPropertyDescription *property = propDict[propertyName];
 			if (property)
 			{
 				[propertiesWanted addObject:property];
@@ -163,7 +163,7 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 
 + (NSNumber *) MR_numberOfEntitiesWithContext:(NSManagedObjectContext *)context
 {
-	return [NSNumber numberWithUnsignedInteger:[self MR_countOfEntitiesWithContext:context]];
+	return @([self MR_countOfEntitiesWithContext:context]);
 }
 
 + (NSNumber *) MR_numberOfEntities
@@ -174,7 +174,7 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 + (NSNumber *) MR_numberOfEntitiesWithPredicate:(NSPredicate *)searchTerm inContext:(NSManagedObjectContext *)context
 {
     
-	return [NSNumber numberWithUnsignedInteger:[self MR_countOfEntitiesWithPredicate:searchTerm inContext:context]];
+	return @([self MR_countOfEntitiesWithPredicate:searchTerm inContext:context]);
 }
 
 + (NSNumber *) MR_numberOfEntitiesWithPredicate:(NSPredicate *)searchTerm;
@@ -285,7 +285,7 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 {
     NSFetchRequest *request = [self MR_createFetchRequestInContext:context];
     [request setFetchLimit:1];
-    [request setPropertiesToFetch:[NSArray arrayWithObject:attribute]];
+    [request setPropertiesToFetch:@[attribute]];
     [request setPredicate:[NSPredicate predicateWithFormat:@"%K = %@", attribute, searchValue]];
     
     return request;
@@ -509,7 +509,7 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 + (id) MR_findFirstByAttribute:(NSString *)attribute withValue:(id)searchValue inContext:(NSManagedObjectContext *)context
 {	
 	NSFetchRequest *request = [self MR_requestFirstByAttribute:attribute withValue:searchValue inContext:context];
-    [request setPropertiesToFetch:[NSArray arrayWithObject:attribute]];
+    [request setPropertiesToFetch:@[attribute]];
     
 	return [self MR_executeFetchRequestAndReturnFirstObject:request inContext:context];
 }
@@ -709,16 +709,16 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 + (NSNumber *) MR_aggregateOperation:(NSString *)function onAttribute:(NSString *)attributeName withPredicate:(NSPredicate *)predicate inContext:(NSManagedObjectContext *)context 
 {
     NSExpression *ex = [NSExpression expressionForFunction:function 
-                                                 arguments:[NSArray arrayWithObject:[NSExpression expressionForKeyPath:attributeName]]];
+                                                 arguments:@[[NSExpression expressionForKeyPath:attributeName]]];
     
     NSExpressionDescription *ed = [[NSExpressionDescription alloc] init];
     [ed setName:@"result"];
     [ed setExpression:ex];
     
     // determine the type of attribute, required to set the expression return type    
-    NSAttributeDescription *attributeDescription = [[[self MR_entityDescription] attributesByName] objectForKey:attributeName];
+    NSAttributeDescription *attributeDescription = [[self MR_entityDescription] attributesByName][attributeName];
     [ed setExpressionResultType:[attributeDescription attributeType]];    
-    NSArray *properties = [NSArray arrayWithObject:ed];
+    NSArray *properties = @[ed];
     MR_RELEASE(ed);
     
     NSFetchRequest *request = [self MR_requestAllWithPredicate:predicate inContext:context];
@@ -726,7 +726,7 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
     [request setResultType:NSDictionaryResultType];    
     
     NSDictionary *resultsDictionary = [self MR_executeFetchRequestAndReturnFirstObject:request];
-    NSNumber *resultValue = [resultsDictionary objectForKey:@"result"];
+    NSNumber *resultValue = resultsDictionary[@"result"];
     
     return resultValue;    
 }
@@ -741,6 +741,11 @@ static NSUInteger defaultBatchSize = kMagicalRecordDefaultBatchSize;
 
 - (id) MR_inContext:(NSManagedObjectContext *)otherContext
 {
+    // (AS) saving current context if object isn't in persistent store
+    if ([self.objectID isTemporaryID]) {
+        [[NSManagedObjectContext contextForCurrentThread] save:nil];
+    }
+    
     NSError *error = nil;
     NSManagedObject *inContext = [otherContext existingObjectWithID:[self objectID] error:&error];
     [MagicalRecordHelpers handleErrors:error];

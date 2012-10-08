@@ -20,6 +20,8 @@ extern NSString * const kMagicalRecordDidMergeChangesFromiCloudNotification;
 
 - (BOOL) MR_save;
 
+- (void) MR_mergeChangesFromNotification:(NSNotification *)notification;
+
 #ifdef NS_BLOCKS_AVAILABLE
 - (BOOL) MR_saveWithErrorHandler:(void (^)(NSError *))errorCallback;
 #endif

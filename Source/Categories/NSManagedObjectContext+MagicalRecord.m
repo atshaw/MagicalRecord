@@ -238,7 +238,7 @@ static void const * kMagicalRecordNotifiesMainContextAssociatedValueKey = @"kMag
     {
         THREAD_ISOLATION_ENABLED(
         SEL selector = enabled ? @selector(MR_observeContextOnMainThread:) : @selector(MR_stopObservingContext:);
-        objc_setAssociatedObject(self, kMagicalRecordNotifiesMainContextAssociatedValueKey, [NSNumber numberWithBool:enabled], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(self, kMagicalRecordNotifiesMainContextAssociatedValueKey, @(enabled), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"        
@@ -262,11 +262,11 @@ static void const * kMagicalRecordNotifiesMainContextAssociatedValueKey = @"kMag
 	else
 	{
 		NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
-		NSManagedObjectContext *threadContext = [threadDict objectForKey:kMagicalRecordManagedObjectContextKey];
+		NSManagedObjectContext *threadContext = threadDict[kMagicalRecordManagedObjectContextKey];
 		if (threadContext == nil)
 		{
 			threadContext = [self MR_contextThatNotifiesDefaultContextOnMainThread];
-			[threadDict setObject:threadContext forKey:kMagicalRecordManagedObjectContextKey];
+			threadDict[kMagicalRecordManagedObjectContextKey] = threadContext;
 		}
 		return threadContext;
 	}

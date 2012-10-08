@@ -39,7 +39,7 @@ NSString * const kMagicalRecordPSCDidCompleteiCloudSetupNotification = @"kMagica
         
         if ([persistentStores count] && [NSPersistentStore MR_defaultPersistentStore] == nil)
         {
-            [NSPersistentStore MR_setDefaultPersistentStore:[persistentStores objectAtIndex:0]];
+            [NSPersistentStore MR_setDefaultPersistentStore:persistentStores[0]];
         }
     }
 }
@@ -97,10 +97,8 @@ NSString * const kMagicalRecordPSCDidCompleteiCloudSetupNotification = @"kMagica
 
 + (NSDictionary *) MR_autoMigrationOptions;
 {
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
-                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
-                             nil];
+    NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES,
+                             NSInferMappingModelAutomaticallyOption: @YES};
     return options;
 }
 
@@ -170,9 +168,8 @@ NSString * const kMagicalRecordPSCDidCompleteiCloudSetupNotification = @"kMagica
         NSDictionary *options = [[self class] MR_autoMigrationOptions];
         if (cloudURL)   //iCloud is available
         {
-            NSDictionary *iCloudOptions = [NSDictionary dictionaryWithObjectsAndKeys:
-                                           contentNameKey, NSPersistentStoreUbiquitousContentNameKey,
-                                           cloudURL, NSPersistentStoreUbiquitousContentURLKey, nil];
+            NSDictionary *iCloudOptions = @{NSPersistentStoreUbiquitousContentNameKey: contentNameKey,
+                                           NSPersistentStoreUbiquitousContentURLKey: cloudURL};
             options = [options MR_dictionaryByMergingDictionary:iCloudOptions];
         }
         else 
@@ -187,7 +184,7 @@ NSString * const kMagicalRecordPSCDidCompleteiCloudSetupNotification = @"kMagica
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([NSPersistentStore MR_defaultPersistentStore] == nil)
             {
-                [NSPersistentStore MR_setDefaultPersistentStore:[[self persistentStores] objectAtIndex:0]];
+                [NSPersistentStore MR_setDefaultPersistentStore:[self persistentStores][0]];
             }
             if (completionBlock)
             {
