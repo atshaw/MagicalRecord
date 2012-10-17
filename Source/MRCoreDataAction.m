@@ -47,8 +47,8 @@ void cleanup_save_queue()
 {
     NSManagedObjectContext *mainContext  = [NSManagedObjectContext MR_defaultContext];
     NSManagedObjectContext *localContext = mainContext;
-    NSPersistentStoreCoordinator *defaultCoordinator = [NSPersistentStoreCoordinator MR_defaultStoreCoordinator];
-    if (![NSThread isMainThread]) 
+//    NSPersistentStoreCoordinator *defaultCoordinator = [NSPersistentStoreCoordinator MR_defaultStoreCoordinator];
+    if (![NSThread isMainThread])
     {
         
 #if kCreateNewCoordinatorOnBackgroundOperations == 1
