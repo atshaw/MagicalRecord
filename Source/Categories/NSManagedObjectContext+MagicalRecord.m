@@ -281,17 +281,20 @@ static void const * kMagicalRecordNotifiesMainContextAssociatedValueKey = @"kMag
         THREAD_ISOLATION_ENABLED(
                          MRLog(@"Creating context in Thread Isolation Mode");
                          context = [[NSManagedObjectContext alloc] init];
-                         [context setPersistentStoreCoordinator:coordinator];
+                                 [context setPersistentStoreCoordinator:coordinator];
+                                 [[NSManagedObjectContext defaultContext] setUndoManager:nil]; //(AS 1/16/13) added to speed up performance hopefully
+                                 MR_AUTORELEASE(context);
                                  )
         PRIVATE_QUEUES_ENABLED(
             MRLog(@"Creating context in Context Private Queue Mode");
             context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
             [context performBlockAndWait:^{
-                [context setPersistentStoreCoordinator:coordinator];
-            }];
+            [context setPersistentStoreCoordinator:coordinator];
+            [[NSManagedObjectContext defaultContext] setUndoManager:nil]; //(AS 1/16/13) added to speed up performance hopefully
+        }];
+                               MR_AUTORELEASE(context);
         )
 
-        MR_AUTORELEASE(context);
     }
     return context;
 }
@@ -324,7 +327,7 @@ static void const * kMagicalRecordNotifiesMainContextAssociatedValueKey = @"kMag
          MRLog(@"Using Private queue mode");
        context = [[self alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
      [context setParentContext:[NSManagedObjectContext MR_defaultContext]];
-
+     MR_AUTORELEASE(context);
     )
     
     return context;
