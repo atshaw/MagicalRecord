@@ -13,11 +13,14 @@
 #endif
 
 #if MR_ENABLE_ACTIVE_RECORD_LOGGING
-#ifdef LOG_VERBOSE
-    #define MRLog(...)  DDLogVerbose(__VA_ARGS__)
-#else
-    #define MRLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
-#endif
+    #define MRLog(...)  DDLogCoreData(__VA_ARGS__) //For some reason LOG_CORE_DATA is not defined
+    /*#ifndef LOG_CORE_DATA
+        #define MRLog(...)  DDLogCoreData(__VA_ARGS__)
+    #elseif defined(LOG_VERBOSE)
+        #define MRLog(...)  DDLogVerbose(__VA_ARGS__)
+    #else
+        #define MRLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
+    #endif*/
 #else
     #define MRLog(...) ((void)0)
 #endif
