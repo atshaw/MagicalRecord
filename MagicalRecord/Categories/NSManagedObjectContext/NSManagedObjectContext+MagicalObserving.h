@@ -17,4 +17,6 @@
 - (void) MR_observeiCloudChangesInCoordinator:(NSPersistentStoreCoordinator *)coordinator;
 - (void) MR_stopObservingiCloudChangesInCoordinator:(NSPersistentStoreCoordinator *)coordinator;
 
+// Astrid added method to subclass NSManagedObjectContext
+- (void) MR_mergeChangesFromNotification:(NSNotification *)notification;
 @end

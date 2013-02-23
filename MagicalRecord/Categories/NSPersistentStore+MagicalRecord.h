@@ -22,6 +22,9 @@ extern NSString * const kMagicalRecordDefaultStoreFileName;
 + (NSURL *) MR_urlForStoreName:(NSString *)storeFileName;
 + (NSURL *) MR_cloudURLForUbiqutiousContainer:(NSString *)bucketName;
 
+// Astrid added methods to delete old databases
++ (NSString *)MR_applicationDocumentsDirectory;
++ (NSString *)MR_applicationStorageDirectory;
 @end
 
 
