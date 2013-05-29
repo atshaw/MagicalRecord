@@ -12,14 +12,16 @@
   #endif
 #endif
 
-#if MR_ENABLE_ACTIVE_RECORD_LOGGING
-#ifdef LOG_VERBOSE
-    #define MRLog(...)  DDLogVerbose(__VA_ARGS__)
+#if MR_ENABLE_ACTIVE_RECORD_LOGGING != 0
+// First, check if we can use Cocoalumberjack for logging
+#if defined(LOG_VERBOSE) || defined(COCOAPODS_POD_AVAILABLE_CocoaLumberjack)
+#import "YGLog.h"
+#define MRLog(...)  DDLogCoreData(__VA_ARGS__)
 #else
-    #define MRLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
+#define MRLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
 #endif
 #else
-    #define MRLog(...) ((void)0)
+#define MRLog(...) ((void)0)
 #endif
 
 #import <CoreData/CoreData.h>
