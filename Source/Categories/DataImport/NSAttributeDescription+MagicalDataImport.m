@@ -34,7 +34,11 @@
     {
         if (attributeType == NSDateAttributeType)
         {
-            if (![value isKindOfClass:[NSDate class]]) 
+            if ([value isKindOfClass:[NSNumber class]])
+            {
+                value = [NSDate dateWithTimeIntervalSince1970:[value intValue]];
+            }
+            else if (![value isKindOfClass:[NSDate class]])
             {
                 NSString *dateFormat = [[self userInfo] valueForKey:kMagicalRecordImportCustomDateFormatKey];
                 value = dateFromString([value description], dateFormat ?: kMagicalRecordImportDefaultDateFormatString);
