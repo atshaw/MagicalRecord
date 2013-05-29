@@ -23,7 +23,17 @@ extern NSString * const kMagicalRecordImportRelationshipTypeKey;
 + (id) MR_importFromObject:(id)data;
 + (id) MR_importFromObject:(id)data inContext:(NSManagedObjectContext *)context;
 
+- (void) MR_setAttributes:(NSDictionary *)attributes forKeysWithObject:(id)objectData;
+
 + (NSArray *) MR_importFromArray:(NSArray *)listOfObjectData;
 + (NSArray *) MR_importFromArray:(NSArray *)listOfObjectData inContext:(NSManagedObjectContext *)context;
+
+
+
+
++ (NSArray *)YG_importFromArrayOnCurrentThread:(NSArray *)listOfObjectData inContext:(NSManagedObjectContext *)context;
++ (NSArray *)YG_importFromArrayOnCurrentThread:(NSArray *)listOfObjectData inContext:(NSManagedObjectContext *)context primaryKey:(NSString *)primaryKey;
++ (NSMutableDictionary *)YG_findOrCreateObjectsWithPrimaryKey:(NSString *)key ids:(NSSet *)importIdSet inContext:(NSManagedObjectContext *)context;
++ (NSMutableDictionary *)YG_findObjectsWithId:(NSString *)key ids:(NSSet *)findSet inContext:(NSManagedObjectContext *)context;
 
 @end
