@@ -11,5 +11,8 @@
 @interface NSString (MagicalRecord_DataImport)
 
 - (NSString *) MR_capitalizedFirstCharacterString;
+- (id) MR_valueForAttribute:(NSAttributeDescription *)attributeInfo;
+- (NSString *) MR_lookupKeyForAttribute:(NSAttributeDescription *)attributeInfo;
+- (id) MR_relatedValueForRelationship:(NSRelationshipDescription *)relationshipInfo;
 
 @end
